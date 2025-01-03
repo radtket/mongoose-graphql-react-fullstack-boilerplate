@@ -1,5 +1,7 @@
 import { gql, useMutation } from '@apollo/client';
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
+
+import { GET_BOOKS } from './BookList';
 
 const ADD_BOOK = gql`
   mutation AddBook($name: String!, $genre: String!) {
@@ -10,36 +12,63 @@ const ADD_BOOK = gql`
   }
 `;
 
+const initalState = {
+  name: '',
+  genre: '',
+};
+
 const AddBook = () => {
-  const [addBook] = useMutation(ADD_BOOK);
+  const [state, setState] = useState({
+    ...initalState,
+  });
 
-  const [name, setName] = useState('');
-  const [genre, setGenre] = useState('');
-
-  const onsubmit = () => {
-    addBook({ variables: { name, genre } });
-  };
+  const [addBook] = useMutation(ADD_BOOK, {
+    refetchQueries: [GET_BOOKS],
+    onCompleted: () => {
+      setState({ ...initalState });
+    },
+    variables: state,
+  });
 
   return (
-    <div style={{ margin: '30px' }}>
-      <div>
-        <input
-          onChange={e => {
-            return setName(e.target.value);
-          }}
-          type="text"
-        />
-        <input
-          onChange={e => {
-            return setGenre(e.target.value);
-          }}
-          type="text"
-        />
-        <button onClick={onsubmit} type="button">
+    <form
+      onSubmit={e => {
+        e.preventDefault();
+        addBook();
+      }}
+    >
+      <fieldset>
+        <legend>Add Book:</legend>
+        {Object.entries(state).map(([key, value]) => {
+          const label = key.charAt(0).toUpperCase() + key.slice(1);
+          return (
+            <Fragment key={`${key}-input`}>
+              <label htmlFor={key}>{label}</label>
+              <input
+                id={key}
+                name={key}
+                onChange={({ target }) => {
+                  return setState(prev => {
+                    return { ...prev, [target.name]: target.value };
+                  });
+                }}
+                placeholder={label}
+                type="text"
+                value={value}
+              />
+            </Fragment>
+          );
+        })}
+        <button
+          disabled={Object.values(state).some(val => {
+            return !val;
+          })}
+          type="submit"
+        >
           Submit
         </button>
-      </div>
-    </div>
+      </fieldset>
+    </form>
   );
 };
 

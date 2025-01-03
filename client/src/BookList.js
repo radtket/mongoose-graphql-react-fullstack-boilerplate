@@ -1,9 +1,10 @@
 import { gql, useQuery } from '@apollo/client';
 import React from 'react';
 
-const GET_BOOKS = gql`
+export const GET_BOOKS = gql`
   {
     books {
+      id
       name
       genre
     }
@@ -22,21 +23,26 @@ const BookList = () => {
   }
 
   return (
-    <div>
+    <>
       <ul>
-        {data.books.map(item => {
-          return <li>{item.name}</li>;
+        {data.books.map(({ id, name, genre }) => {
+          return (
+            <dl key={`${id}-book`}>
+              <b>{name}</b> <i>{genre}</i>
+            </dl>
+          );
         })}
       </ul>
       <button
+        disabled={loading}
         onClick={() => {
-          return refetch();
+          refetch();
         }}
         type="button"
       >
         Refetch
       </button>
-    </div>
+    </>
   );
 };
 
