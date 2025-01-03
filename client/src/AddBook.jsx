@@ -1,5 +1,5 @@
 import { gql, useMutation } from '@apollo/client';
-import React, { Fragment, useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import { GET_BOOKS } from './BookList';
 
