@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"npm run dev --prefix client\" \"npm run start --prefix server\"",
-    "install": "npm install --prefix client && npm install --prefix server",
-    "build": "npm run build --prefix client",
-    "test": "npm run test --prefix client && npm run test --prefix server"
+    "start": "concurrently \"npm run dev --prefix src/client\" \"npm run start --prefix src/server\"",
+    "install": "npm install --prefix src/client && npm install --prefix src/server",
+    "build": "npm run build --prefix src/client",
+    "test": "npm run test --prefix src/client && npm run test --prefix src/server"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
